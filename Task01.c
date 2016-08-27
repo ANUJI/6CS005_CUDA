@@ -1,3 +1,5 @@
+// Name :U H Anuji De Silva
+// Suden ID: 1432292
 #include <stdio.h>
 #define N 4
  
