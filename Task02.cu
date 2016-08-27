@@ -1,7 +1,9 @@
-// Name: U > Anuji de Silva
+// Name: U.H. Anuji de Silva
 // Student Id: 1432292
 
 #include <stdio.h>
+//inserting stdlib.h library to run Cuda Malloc
+#include <stdlib.h>
 #define N 4
  
  
