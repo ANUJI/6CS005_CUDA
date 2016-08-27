@@ -3,6 +3,8 @@
  
 int main()
 {
+
+// variables Declaration
    int i, j =0;
 
   int A[N][N] =
