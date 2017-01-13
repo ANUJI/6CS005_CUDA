@@ -1,0 +1,85 @@
+// Name: U.H. Anuji De Silva
+// Student Id: 1432292
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 15
+
+/* The _global_ indicates a function that runs on the device and it called for host code. A kernel to add two integers */
+
+__global__ void MatAdd(int X[][N], int Y[][N], int Z[][N]){
+           int a = threadIdx.x;
+           int b = threadIdx.y;
+
+           C[a][b] = X[a][b] + Y[a][b];
+}
+
+/* My code i used variable is int a and int b, because of that reason i changed given code variables */
+
+
+void randmatfunc(int newmat[N][N]){
+  int a, b, c; 
+    for(a=0;a<N;a++){
+        for(b=0;b<N;b++){
+          c = rand() % 100 + 1;;
+            printf("%d ", c);
+            newmat[a][b] =c;
+        }
+        printf("\n");
+       
+    } 
+  printf("\n-----------------------------------\n"); 
+}
+
+int main(){
+
+int X[N][N];  
+randmatfunc(X);
+  
+int Y[N][N];  
+randmatfunc(Y);  
+
+
+
+  int Z[N][N];
+
+  int (*d_X)[N], (*d_Y)[N], (*d_Z)[N];
+
+ /* device copies of X, Y, C and Allocate space for device copies of X, Y, Z */
+	
+  cudaMalloc((void**)&d_X, (N*N)*sizeof(int));
+  cudaMalloc((void**)&d_Y, (N*N)*sizeof(int));
+  cudaMalloc((void**)&d_Z, (N*N)*sizeof(int));
+
+// copy input to device
+ 
+  cudaMemcpy(d_X, X, (N*N)*sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_Y, Y, (N*N)*sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_Z, Z, (N*N)*sizeof(int), cudaMemcpyHostToDevice);
+
+// Launch add() kernel on GPU
+  int numBlocks = 1;
+  dim3 threadsPerBlock(N,N);
+  MatAdd<<<numBlocks,threadsPerBlock>>>(d_X,d_Y,d_Z);
+
+// Copy result back to the host
+  cudaMemcpy(Z, d_Z, (N*N)*sizeof(int), cudaMemcpyDeviceToHost);
+
+  int a, b; printf("Z = \n");
+    for(a=0;a<N;a++){
+        for(b=0;b<N;b++){
+            printf("%d ", Z[a][b]);
+        }
+        printf("\n");
+    }
+
+// This is cleanup 
+  cudaFree(d_X); 
+  cudaFree(d_Y); 
+  cudaFree(d_Z);
+
+  printf("\n");
+
+  return 0;
+}
